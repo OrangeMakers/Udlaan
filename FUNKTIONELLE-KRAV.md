@@ -29,6 +29,9 @@ Tekniske krav og specifikationer for systemet.
 - **FR-008**: System skal kunne vise om udstyr er ledigt eller udlånt
 - **FR-009**: Ansvarlig skal kunne tilføje nyt udstyr til systemet
 - **FR-010**: Ansvarlig skal kunne scanne/identificere udstyr hurtigt
+- **FR-049**: System skal kunne vise generel note på udstyr (fx "Maskinen rasler" eller "Kan lugte ved hård brug")
+- **FR-052**: Hvert udstyr skal have en standard låneperiode (forslag) og en maksimal låneperiode
+- **FR-053**: System skal foreslå standard låneperiode ved udlån, men tillade op til maksimal periode
 
 **Relaterede entiteter:** [Udstyr](DATAMODEL.md#udstyr)
 **Relaterede flows:** [Flow 2](FLOWS.md#flow-2-udlån-til-medlem), [Flow 3](FLOWS.md#flow-3-udlån-til-ikke-medlem-placering)
@@ -38,9 +41,9 @@ Tekniske krav og specifikationer for systemet.
 ### Udlån og Returnering
 - **FR-011**: System skal kunne registrere et nyt udlån (koble udstyr + låntager)
 - **FR-012**: System skal kunne registrere returnering af udstyr
-- **FR-013**: Ved returnering skal persondata automatisk slettes
-- **FR-014**: System skal vise oversigt over alle aktive udlån
-- **FR-015**: System skal vise historik over tidligere udlån (anonymiseret)
+- **FR-013**: System skal vise oversigt over alle aktive udlån
+- **FR-014**: System skal vise historik over tidligere udlån (anonymiseret)
+- **FR-050**: System skal kunne sende returkvittering til låntager ved returnering
 
 **Relaterede user stories:** US-002, US-004
 **Relaterede entiteter:** [Udlån](DATAMODEL.md#udlån)
@@ -159,16 +162,17 @@ Tekniske krav og specifikationer for systemet.
 | Kategori | Antal Krav | Prioritet | Status |
 |----------|-----------|-----------|--------|
 | Identitet og Autentificering | 5 | Must Have | Draft |
-| Udstyrshåndtering | 5 | Must Have | Draft |
+| Udstyrshåndtering | 8 | Must Have | Draft |
 | Udlån og Returnering | 5 | Must Have | Draft |
-| Privacy og Datasletning | 4 | Must Have | Draft |
+| Privacy og Datasletning | 6 | Must Have | Draft |
 | RFID og Hardware | 4 | Must Have | Draft |
 | Validering og Kommunikation | 6 | Should Have | Draft |
 | Tjeklister | 7 | Must Have | Draft |
 | Skadehåndtering | 5 | Should Have | Draft |
+| Ansvarsfraskrivelse og Instruktion | 5 | Must Have | Draft |
 | Ikke-funktionelle | 5 | Must Have | Draft |
 
-**Total**: 46 krav (41 funktionelle, 5 ikke-funktionelle)
+**Total**: 53 krav (48 funktionelle, 5 ikke-funktionelle)
 
 ---
 
@@ -178,43 +182,42 @@ Tekniske krav og specifikationer for systemet.
 ```
 FR-016 (Minimal data)
   → FR-011 (Registrer udlån)
-  → FR-013 (Automatisk sletning)
-  → FR-017 (Fjern persondata)
+  → FR-017 (Automatisk sletning)
   → FR-018 (Log sletning)
+  → FR-019 (Anonymiseret statistik)
 ```
 
 ### Udlån til Medlem Chain
 ```
-FR-020 (Læs RFID)
-  → FR-021 (Login)
+FR-022 (Læs RFID)
+  → FR-023 (Login)
   → FR-006 (Udstyr ID)
-  → FR-022 (Medlem RFID)
-  → FR-030 (Udleveringstjekliste)
-  → FR-033 (Gennemfør tjekliste)
+  → FR-024 (Medlem RFID)
+  → FR-032 (Udleveringstjekliste)
+  → FR-035 (Gennemfør tjekliste)
   → FR-011 (Registrer udlån)
 ```
 
 ### Udlån til Ikke-medlem Chain
 ```
-FR-021 (Login)
+FR-023 (Login)
   → FR-006 (Udstyr ID)
-  → FR-024 (Valider adresse)
-  → FR-026/FR-027 (Send link)
-  → FR-028 (Bekræft)
-  → FR-030 (Udleveringstjekliste)
-  → FR-033 (Gennemfør tjekliste)
+  → FR-026 (Valider adresse)
+  → FR-028/FR-029 (Send link)
+  → FR-030 (Bekræft)
+  → FR-032 (Udleveringstjekliste)
+  → FR-035 (Gennemfør tjekliste)
   → FR-011 (Registrer udlån)
 ```
 
 ### Returnerings Chain
 ```
 FR-012 (Registrer returnering)
-  → FR-031 (Returneringstjekliste)
-  → FR-034 (Gennemfør tjekliste)
-  → FR-037 (Registrer skader hvis relevante)
-  → FR-013 (Automatisk sletning)
-  → FR-017 (Fjern persondata)
-  → FR-018 (Log sletning)
+  → FR-033 (Returneringstjekliste)
+  → FR-036 (Gennemfør tjekliste)
+  → FR-039 (Registrer skader hvis relevante)
+  → FR-020 (Marker sletningsdato)
+  → FR-021 (Automatisk sletning job)
 ```
 
 ---

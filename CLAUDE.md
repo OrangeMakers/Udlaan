@@ -104,6 +104,19 @@ Dette dokument beskriver dokumentstrukturen for AI coding agents der skal arbejd
 
 ---
 
+#### ADMIN-DASHBOARD.md
+**Formål**: Admin dashboard funktionalitet og interface beskrivelse
+**Indhold**:
+- Dashboard sektioner (Overblik, Udstyrshåndtering, Tjeklister, Brugere, Udlånsoversigt, Skaderapporter, Rapporter, Systemindstillinger)
+- Funktioner per sektion
+- Navigation og layout
+- Sikkerhed og roller
+- Mockup beskrivelser
+
+**Hvornår at bruge**: Når du skal implementere admin interface eller forstå administratorens workflow
+
+---
+
 #### DRAFT.md
 **Formål**: Arbejdsdokument med løse ideer og noter
 **Status**: IKKE endelig specifikation
@@ -175,6 +188,7 @@ Dette dokument beskriver dokumentstrukturen for AI coding agents der skal arbejd
 | Hvordan skal det implementeres? | FUNKTIONELLE-KRAV.md |
 | Hvilke data skal gemmes? | DATAMODEL.md |
 | Hvordan fungerer processen? | FLOWS.md |
+| Hvad skal admin dashboard have? | ADMIN-DASHBOARD.md |
 | Hvad er prioriteten? | KRAVSPECIFIKATION.md |
 | Hvad er project status? | README.md |
 

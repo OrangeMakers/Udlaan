@@ -35,16 +35,29 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Start([Ansvarlig vælger Udlån]) --> ScanEquip[Scanner/søg udstyr]
-    ScanEquip --> CheckStatus{Status = ledig?}
-    CheckStatus -->|Nej| Error[Vis fejl: Ikke tilgængeligt]
-    CheckStatus -->|Ja| ShowEquip[Vis udstyr]
-    ShowEquip --> ScanMember[Medlem scanner RFID]
+    Start([Ansvarlig vælger Udlån]) --> ScanMember[Medlem scanner RFID]
     ScanMember --> ValidateMember[System validerer medlem]
     ValidateMember --> MemberValid{Gyldigt medlem?}
     MemberValid -->|Nej| MemberError[Vis fejl: Ugyldigt medlem]
     MemberValid -->|Ja| ShowMember[Vis medlemsinfo]
-    ShowMember --> GiveInstr[Ansvarlig giver instruktion i brug]
+    ShowMember --> ScanEquip[Scanner/søg udstyr]
+    ScanEquip --> CheckStatus{Status?}
+    CheckStatus -->|Ledig| ShowEquip[Vis udstyr]
+    CheckStatus -->|Udlånt| ShowLoanInfo[Vis: Udlånt til X, forventet retur Y]
+    CheckStatus -->|Beskadiget| ShowDamage[Vis skaderapport]
+    ShowLoanInfo --> HasEquip{Har udstyr i hånden?}
+    HasEquip -->|Ja| OfferReturn[Tilbyd: Registrer returnering nu]
+    OfferReturn --> AcceptReturn{Registrer retur?}
+    AcceptReturn -->|Ja| ReturnFlow([Gå til Returneringsflow])
+    AcceptReturn -->|Nej| End1([Afslut - kan ikke udlånes])
+    HasEquip -->|Nej| End1
+    ShowDamage --> CheckRepair{Skade udbedret?}
+    CheckRepair -->|Nej| End1
+    CheckRepair -->|Ja| MarkRepaired[Marker skade som udbedret]
+    MarkRepaired --> ShowEquip
+    ShowEquip --> ShowPeriod[Vis standard/maks låneperiode]
+    ShowPeriod --> SelectPeriod[Vælg låneperiode op til maks]
+    SelectPeriod --> GiveInstr[Ansvarlig giver instruktion i brug]
     GiveInstr --> Checklist[Vis udleveringstjekliste]
     Checklist --> CheckItems[Ansvarlig gennemgår punkter]
     CheckItems --> AllDone{Alle punkter OK?}
@@ -54,11 +67,13 @@ flowchart TD
     Confirm2 --> Confirm3[Ansvarlig: Bekræft givet instruktion]
     Confirm3 --> RegisterLoan[Registrer udlån med bekræftelser]
     RegisterLoan --> UpdateStatus[Opdater udstyr status til udlånt]
-    UpdateStatus --> Confirm[Vis bekræftelse]
+    UpdateStatus --> MoreItems{Låne flere ting?}
+    MoreItems -->|Ja| ScanEquip
+    MoreItems -->|Nej| Confirm[Vis bekræftelse]
     Confirm --> End([Udlån gennemført])
 ```
 
-**Relaterede krav:** FR-011, FR-022, FR-023, FR-030, FR-033, FR-044, FR-045, FR-046, FR-047, FR-048, US-006, US-009, US-013
+**Relaterede krav:** FR-011, FR-022, FR-023, FR-032, FR-035, FR-044, FR-045, FR-046, FR-047, FR-048, FR-052, FR-053, US-006, US-009, US-013
 
 **Ansvarsfraskrivelse:** Dette flow inkluderer juridisk vigtige bekræftelser der dokumenterer instruktion er givet og modtaget, hvilket fraskriver foreningen ansvar.
 
@@ -68,11 +83,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Start([Ansvarlig vælger Udlån]) --> ScanEquip[Scanner/søg udstyr]
-    ScanEquip --> CheckStatus{Status = ledig?}
-    CheckStatus -->|Nej| Error[Vis fejl: Ikke tilgængeligt]
-    CheckStatus -->|Ja| ShowEquip[Vis udstyr]
-    ShowEquip --> EnterInfo[Ansvarlig indtaster låntager info]
+    Start([Ansvarlig vælger Udlån]) --> EnterInfo[Ansvarlig indtaster låntager info]
     EnterInfo --> ValidateAddress[Valider adresse via sygesikring]
     ValidateAddress --> AddressValid{Adresse gyldig?}
     AddressValid -->|Nej| AddressError[Vis fejl: Ugyldig adresse]
@@ -81,7 +92,25 @@ flowchart TD
     WaitConfirm --> Confirmed{Bekræftet?}
     Confirmed -->|Timeout| Cancelled[Annuller udlån]
     Confirmed -->|Ja| NotifyResponsible[Notificer ansvarlig]
-    NotifyResponsible --> GiveInstr[Ansvarlig giver instruktion i brug]
+    NotifyResponsible --> ShowBorrower[Vis låntager info]
+    ShowBorrower --> ScanEquip[Scanner/søg udstyr]
+    ScanEquip --> CheckStatus{Status?}
+    CheckStatus -->|Ledig| ShowEquip[Vis udstyr]
+    CheckStatus -->|Udlånt| ShowLoanInfo[Vis: Udlånt til X, forventet retur Y]
+    CheckStatus -->|Beskadiget| ShowDamage[Vis skaderapport]
+    ShowLoanInfo --> HasEquip{Har udstyr i hånden?}
+    HasEquip -->|Ja| OfferReturn[Tilbyd: Registrer returnering nu]
+    OfferReturn --> AcceptReturn{Registrer retur?}
+    AcceptReturn -->|Ja| ReturnFlow([Gå til Returneringsflow])
+    AcceptReturn -->|Nej| End1([Afslut - kan ikke udlånes])
+    HasEquip -->|Nej| End1
+    ShowDamage --> CheckRepair{Skade udbedret?}
+    CheckRepair -->|Nej| End1
+    CheckRepair -->|Ja| MarkRepaired[Marker skade som udbedret]
+    MarkRepaired --> ShowEquip
+    ShowEquip --> ShowPeriod[Vis standard/maks låneperiode]
+    ShowPeriod --> SelectPeriod[Vælg låneperiode op til maks]
+    SelectPeriod --> GiveInstr[Ansvarlig giver instruktion i brug]
     GiveInstr --> Checklist[Vis udleveringstjekliste]
     Checklist --> CheckItems[Ansvarlig gennemgår punkter]
     CheckItems --> AllDone{Alle punkter OK?}
@@ -91,11 +120,13 @@ flowchart TD
     Confirm2 --> Confirm3[Ansvarlig: Bekræft givet instruktion]
     Confirm3 --> RegisterLoan[Registrer udlån med bekræftelser]
     RegisterLoan --> UpdateStatus[Opdater udstyr status til udlånt]
-    UpdateStatus --> Confirm[Vis bekræftelse]
+    UpdateStatus --> MoreItems{Låne flere ting?}
+    MoreItems -->|Ja| ScanEquip
+    MoreItems -->|Nej| Confirm[Vis bekræftelse]
     Confirm --> End([Udlån gennemført])
 ```
 
-**Relaterede krav:** FR-011, FR-024, FR-025, FR-026, FR-027, FR-028, FR-030, FR-033, FR-044, FR-045, FR-046, FR-047, FR-048, US-007, US-008, US-009, US-013
+**Relaterede krav:** FR-011, FR-026, FR-027, FR-028, FR-029, FR-030, FR-032, FR-035, FR-044, FR-045, FR-046, FR-047, FR-048, FR-052, FR-053, US-007, US-008, US-009, US-013
 
 **Ansvarsfraskrivelse:** Dette flow inkluderer juridisk vigtige bekræftelser der dokumenterer instruktion er givet og modtaget, hvilket fraskriver foreningen ansvar.
 
@@ -125,17 +156,18 @@ flowchart TD
     DamageCheck -->|Nej| ConfirmReturn
     ConfirmReturn --> AutoProcess[System automatisk proces]
     AutoProcess --> SetReturned[Marker udlån som returneret]
-    SetReturned --> DeleteData[SLET persondata]
-    DeleteData --> KeepAnon[BEVAR anonymiseret data]
-    KeepAnon --> LogDeletion[Log datasletning]
-    LogDeletion --> UpdateEquip[Opdater udstyrsstatus]
+    SetReturned --> SetScheduledDeletion[Sæt planlagt sletningsdato = nu + 3 måneder]
+    SetScheduledDeletion --> SendReceipt[Send returkvittering til låntager]
+    SendReceipt --> UpdateEquip[Opdater udstyrsstatus]
     UpdateEquip --> ShowConfirm[Vis bekræftelse]
     ShowConfirm --> End([Returnering gennemført])
 ```
 
-**Relaterede krav:** FR-012, FR-013, FR-017, FR-018, FR-031, FR-034, FR-037, FR-038, US-010, US-011
+**Relaterede krav:** FR-012, FR-013, FR-017, FR-020, FR-031, FR-034, FR-037, FR-038, US-010, US-011
 
-**Privacy Note:** Dette flow demonstrerer automatisk datasletning (NFR-002, FR-017)
+**Privacy Note:** Ved returnering sættes planlagt sletningsdato til 3 måneder frem. Persondata bevares midlertidigt for håndtering af tvister. Automatisk job sletter persondata når sletningsdato nås (FR-017, FR-020, FR-021)
+
+**Receipt Note:** Returkvittering sendes til låntager som dokumentation for returnering
 
 ---
 

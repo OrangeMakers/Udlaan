@@ -52,6 +52,9 @@ Type: Enum (skruemaskine, rundsav, værktøj, diverse)
 Beskrivelse: Text
 Status: Enum (ledig, udlånt, beskadiget, til-reparation)
 Placering: String (hvor opbevares den?)
+Generel_note: Text (NULL hvis ingen, fx "Maskinen er kendt for at rasle" eller "Kan lugte hvis man presser den hårdt")
+Standard_laaneperiode_dage: Integer (default forslag, fx 2 dage)
+Maks_laaneperiode_dage: Integer (absolut maksimum, fx 7 dage)
 Oprettet_dato: DateTime
 Udleveringstjekliste_id: UUID (foreign key → Tjekliste)
 Returneringstjekliste_id: UUID (foreign key → Tjekliste)

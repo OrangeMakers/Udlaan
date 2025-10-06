@@ -10,6 +10,7 @@ Et system til at håndtere udlån af udstyr i Orangemakers, hvor man kan registr
 - **[FUNKTIONELLE-KRAV.md](FUNKTIONELLE-KRAV.md)** - Funktionelle og ikke-funktionelle krav
 - **[DATAMODEL.md](DATAMODEL.md)** - Database design og datamodel
 - **[FLOWS.md](FLOWS.md)** - Process flows med Mermaid diagrammer
+- **[ADMIN-DASHBOARD.md](ADMIN-DASHBOARD.md)** - Admin dashboard funktionalitet og interface beskrivelse
 
 ### Arbejdsdokumenter
 - **[DRAFT.md](DRAFT.md)** - Arbejdsdokument med ideer og noter (ikke endelig spec)
@@ -51,6 +52,7 @@ Et system til at håndtere udlån af udstyr i Orangemakers, hvor man kan registr
 - [Se process flows →](FLOWS.md)
 - [Se datamodel →](DATAMODEL.md)
 - [Se funktionelle krav →](FUNKTIONELLE-KRAV.md)
+- [Se admin dashboard →](ADMIN-DASHBOARD.md)
 
 ## 👥 Roller
 
