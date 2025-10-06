@@ -80,14 +80,22 @@ Ansvarlig_id: UUID (foreign key → Ansvarlig)
 Udleveringstjekliste_udfyldelse_id: UUID (foreign key → TjeklisteUdfyldelse)
 Returneringstjekliste_udfyldelse_id: UUID (foreign key → TjeklisteUdfyldelse, NULL hvis ikke returneret)
 
---- PERSONDATA (NULL'ES VED RETURNERING) ---
-Laantager_navn: String (NULL efter returnering)
-Laantager_kontakt: String (NULL efter returnering)
-Laantager_type: Enum (medlem, placering) (NULL efter returnering)
-Medlemsnummer: String (NULL efter returnering, hvis medlem)
-Placering_adresse: String (NULL efter returnering, hvis ikke-medlem)
-Validerings_token: String (NULL efter returnering, hvis brugt)
-Validerings_status: Enum (afventer, bekræftet) (NULL efter returnering)
+--- PERSONDATA (NULL'ES EFTER 3 MÅNEDER) ---
+Laantager_navn: String (NULL 3 måneder efter returnering)
+Laantager_kontakt: String (NULL 3 måneder efter returnering)
+Laantager_type: Enum (medlem, placering) (NULL 3 måneder efter returnering)
+Medlemsnummer: String (NULL 3 måneder efter returnering, hvis medlem)
+Placering_adresse: String (NULL 3 måneder efter returnering, hvis ikke-medlem)
+Validerings_token: String (NULL 3 måneder efter returnering, hvis brugt)
+Validerings_status: Enum (afventer, bekræftet) (NULL 3 måneder efter returnering)
+Planlagt_sletning_dato: DateTime (sættes til returnering + 3 måneder)
+
+--- BEKRÆFTELSER OG ANSVARSFRASKRIVELSE ---
+Laantager_bekraeftelse_instruktion: Boolean (låntager bekræfter modtaget instruktion)
+Laantager_bekraeftelse_kompetence: Boolean (låntager bekræfter at kunne bruge udstyret)
+Laantager_bekraeftelse_dato: DateTime
+Ansvarlig_bekraeftelse_instruktion: Boolean (ansvarlig bekræfter givet instruktion)
+Ansvarlig_bekraeftelse_dato: DateTime
 
 --- ANONYMISERET DATA (BEVARES) ---
 Laantager_type_anon: Enum (medlem, placering)
@@ -96,11 +104,13 @@ Udlaans_maaned: Integer (1-12)
 Udlaans_aar: Integer (YYYY)
 ```
 
-**Privacy Note:** Persondata felter sættes til NULL ved returnering (FR-013, FR-017). Anonymiseret data bevares for statistik (FR-019).
+**Privacy Note:** Persondata bevares i 3 måneder efter returnering for support/tvister. Efter 3 måneder NULL'es felterne automatisk (FR-013, FR-017). Anonymiseret data bevares permanent for statistik (FR-019).
 
-**Relaterede krav:** FR-011, FR-012, FR-013, FR-014, FR-015, FR-016, FR-017, NFR-002
+**Ansvarsfraskrivelse Note:** Både låntager og ansvarlig skal bekræfte instruktion er givet/modtaget. Dette dokumenterer at foreningen har opfyldt sin undervisningspligt og låntager har bekræftet kompetence, hvilket fraskriver foreningen ansvar ved skader på person eller udstyr.
+
+**Relaterede krav:** FR-011, FR-012, FR-013, FR-014, FR-015, FR-016, FR-017, FR-044, FR-045, FR-046, NFR-002
 **Bruges i flows:** Alle flows
-**Relaterede user stories:** US-002, US-003
+**Relaterede user stories:** US-002, US-003, US-013
 
 ---
 
@@ -290,14 +300,25 @@ Slettet_af: Enum (system, bruger)
 
 ## Privacy-by-Design Princip
 
-**Vigtigt**: Persondata om låntager opbevares IKKE som separat entitet, men som midlertidige felter på Udlån-entiteten. Ved returnering NULL'es disse felter, mens anonymiseret statistik bevares.
+**Vigtigt**: Persondata om låntager opbevares IKKE som separat entitet, men som midlertidige felter på Udlån-entiteten. Persondata bevares i 3 måneder efter returnering for support/tvister, derefter NULL'es felterne automatisk.
 
 ### Datasletning ved Returnering
 
-**Trin:**
+**Trin (ved returnering):**
 1. System sætter `Faktisk_returdato` på Udlån
 2. System beregner `Varighed_dage` = (Faktisk_returdato - Udlånsdato)
-3. System NULL'er persondata felter:
+3. System sætter `Planlagt_sletning_dato` = Faktisk_returdato + 3 måneder
+4. System bevarer persondata felter midlertidigt (i 3 måneder)
+5. System kopierer til anonymiseret data:
+   - `Laantager_type` → `Laantager_type_anon`
+   - Beregnet `Varighed_dage`
+   - `Udlaans_maaned`
+   - `Udlaans_aar`
+6. System opdaterer Udstyr status
+
+**Trin (3 måneder efter returnering - automatisk job):**
+1. System finder alle Udlån hvor `Planlagt_sletning_dato` <= nu
+2. For hver Udlån, NULL persondata felter:
    - `Laantager_navn` → NULL
    - `Laantager_kontakt` → NULL
    - `Laantager_type` → NULL
@@ -305,13 +326,8 @@ Slettet_af: Enum (system, bruger)
    - `Placering_adresse` → NULL
    - `Validerings_token` → NULL
    - `Validerings_status` → NULL
-4. System bevarer anonymiseret data:
-   - `Laantager_type_anon` (bevares)
-   - `Varighed_dage` (bevares)
-   - `Udlaans_maaned` (bevares)
-   - `Udlaans_aar` (bevares)
-5. System opretter entry i DataSletningsLog
-6. System opdaterer Udstyr status
+3. System opretter entry i DataSletningsLog (årsag: "3-måneders-retention")
+4. Anonymiseret data bevares permanent
 
 **Se også:** [Privacy Dataflow Diagram](FLOWS.md#dataflow-privacy-by-design-ved-returnering)
 
@@ -366,12 +382,17 @@ CREATE INDEX idx_validering_udloeb ON ValideringsLink(Udloeber_dato) WHERE Brugt
 
 | Entitet | Persondata | Retention |
 |---------|-----------|-----------|
-| Udlån | Ja (midlertidigt) | Slettes ved returnering |
+| Udlån | Ja (midlertidigt) | **3 måneder efter returnering** |
 | Medlem | Ja | Så længe medlemskab er aktivt |
 | Ansvarlig | Ja | Så længe ansættelse/rolle er aktiv |
 | ValideringsLink | Ja | 30 dage efter udløb |
 | DataSletningsLog | Nej (kun audit) | 5 år (GDPR krav) |
 | Alle andre | Nej | Permanent (statistik/historik) |
+
+**Rationale for 3 måneders retention:**
+- Tillader håndtering af tvister eller reklamationer
+- Giver tid til opfølgning på skader
+- Balancerer GDPR's dataminimeringsprincip med praktiske behov
 
 ---
 

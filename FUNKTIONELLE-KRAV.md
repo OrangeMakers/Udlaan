@@ -50,22 +50,26 @@ Tekniske krav og specifikationer for systemet.
 
 ### Privacy og Datasletning
 - **FR-016**: System skal kun gemme nødvendige personoplysninger
-- **FR-017**: System skal automatisk fjerne persondata ved returnering
+- **FR-017**: System skal automatisk fjerne persondata 3 måneder efter returnering
 - **FR-018**: System skal logge hvornår persondata er slettet
 - **FR-019**: System skal kunne generere anonymiseret statistik uden persondata
+- **FR-020**: System skal markere udlån med planlagt sletningsdato ved returnering
+- **FR-021**: System skal køre automatisk job der sletter persondata når sletningsdato er nået
 
 **Relaterede user stories:** US-002, US-003
 **Relaterede entiteter:** [Udlån](DATAMODEL.md#udlån), [DataSletningsLog](DATAMODEL.md#datasletningslog)
 **Relaterede flows:** [Flow 4](FLOWS.md#flow-4-returnering-af-udstyr)
 **Se også:** [Privacy-by-Design Dataflow](FLOWS.md#dataflow-privacy-by-design-ved-returnering)
 
+**Retention Policy:** Persondata bevares i 3 måneder efter returnering for håndtering af tvister/reklamationer, derefter slettes automatisk.
+
 ---
 
 ### RFID og Hardware
-- **FR-020**: System skal kunne læse RFID nøglebrikker
-- **FR-021**: Ansvarlige skal kunne logge ind med RFID eller brugernavn/adgangskode
-- **FR-022**: Medlemmer skal kunne identificeres via RFID nøgle på terminal
-- **FR-023**: System skal vise medlemsstatus ved RFID scanning
+- **FR-022**: System skal kunne læse RFID nøglebrikker
+- **FR-023**: Ansvarlige skal kunne logge ind med RFID eller brugernavn/adgangskode
+- **FR-024**: Medlemmer skal kunne identificeres via RFID nøgle på terminal
+- **FR-025**: System skal vise medlemsstatus ved RFID scanning
 
 **Relaterede user stories:** US-005, US-006
 **Relaterede entiteter:** [Ansvarlig](DATAMODEL.md#ansvarlig), [Medlem](DATAMODEL.md#medlem)
@@ -74,12 +78,12 @@ Tekniske krav og specifikationer for systemet.
 ---
 
 ### Validering og Kommunikation
-- **FR-024**: System skal kunne validere adresse/postnummer for ikke-medlemmer
-- **FR-025**: System skal kunne integrere med sygesikringsregister eller lignende validering
-- **FR-026**: System skal kunne sende valideringslink via email
-- **FR-027**: System skal kunne sende valideringslink via SMS
-- **FR-028**: Låntager skal kunne bekræfte oplysninger via link før udlån godkendes
-- **FR-029**: Ansvarlig skal kunne se bekræftelsesstatus
+- **FR-026**: System skal kunne validere adresse/postnummer for ikke-medlemmer
+- **FR-027**: System skal kunne integrere med sygesikringsregister eller lignende validering
+- **FR-028**: System skal kunne sende valideringslink via email
+- **FR-029**: System skal kunne sende valideringslink via SMS
+- **FR-030**: Låntager skal kunne bekræfte oplysninger via link før udlån godkendes
+- **FR-031**: Ansvarlig skal kunne se bekræftelsesstatus
 
 **Relaterede user stories:** US-007, US-008
 **Relaterede entiteter:** [ValideringsLink](DATAMODEL.md#valideringslink)
@@ -88,13 +92,13 @@ Tekniske krav og specifikationer for systemet.
 ---
 
 ### Tjeklister
-- **FR-030**: Hvert udstyr skal have tilknyttet udleveringstjekliste
-- **FR-031**: Hvert udstyr skal have tilknyttet returneringstjekliste
-- **FR-032**: Tjeklister skal kunne oprettes/redigeres ved tilføjelse af udstyr
-- **FR-033**: Udleveringstjekliste skal gennemføres før udlån kan registreres
-- **FR-034**: Returneringstjekliste skal gennemføres før returnering kan godkendes
-- **FR-035**: Hvert tjekpunkt skal kunne markeres (OK/Ikke OK/Noter)
-- **FR-036**: Tjeklister skal kunne tilpasses udstyrstype
+- **FR-032**: Hvert udstyr skal have tilknyttet udleveringstjekliste
+- **FR-033**: Hvert udstyr skal have tilknyttet returneringstjekliste
+- **FR-034**: Tjeklister skal kunne oprettes/redigeres ved tilføjelse af udstyr
+- **FR-035**: Udleveringstjekliste skal gennemføres før udlån kan registreres
+- **FR-036**: Returneringstjekliste skal gennemføres før returnering kan godkendes
+- **FR-037**: Hvert tjekpunkt skal kunne markeres (OK/Ikke OK/Noter)
+- **FR-038**: Tjeklister skal kunne tilpasses udstyrstype
 
 **Relaterede user stories:** US-009, US-010, US-012
 **Relaterede entiteter:** [Tjekliste](DATAMODEL.md#tjekliste), [Tjekpunkt](DATAMODEL.md#tjekpunkt), [TjeklisteUdfyldelse](DATAMODEL.md#tjeklisteudfyldelse), [TjekpunktResultat](DATAMODEL.md#tjekpunktresultat)
@@ -103,15 +107,30 @@ Tekniske krav og specifikationer for systemet.
 ---
 
 ### Skadehåndtering
-- **FR-037**: System skal kunne registrere skader fundet ved returnering
-- **FR-038**: Beskadiget udstyr skal automatisk markeres som "ikke ledig"
-- **FR-039**: Der skal kunne tilføjes detaljerede noter om skader
-- **FR-040**: System skal gemme skadehistorik per udstyr
-- **FR-041**: Beskadiget udstyr skal kunne markeres som repareret og gøres ledigt igen
+- **FR-039**: System skal kunne registrere skader fundet ved returnering
+- **FR-040**: Beskadiget udstyr skal automatisk markeres som "ikke ledig"
+- **FR-041**: Der skal kunne tilføjes detaljerede noter om skader
+- **FR-042**: System skal gemme skadehistorik per udstyr
+- **FR-043**: Beskadiget udstyr skal kunne markeres som repareret og gøres ledigt igen
 
 **Relaterede user stories:** US-011
 **Relaterede entiteter:** [Skaderapport](DATAMODEL.md#skaderapport), [Udstyr](DATAMODEL.md#udstyr)
 **Relaterede flows:** [Flow 4](FLOWS.md#flow-4-returnering-af-udstyr), [Flow 5](FLOWS.md#flow-5-reparation-af-beskadiget-udstyr)
+
+---
+
+### Ansvarsfraskrivelse og Instruktion
+- **FR-044**: Låntager skal bekræfte at have modtaget instruktion i brug af udstyret
+- **FR-045**: Låntager skal bekræfte at have kompetence til at bruge udstyret sikkert
+- **FR-046**: Ansvarlig skal bekræfte at have givet fyldestgørende instruktion til låntager
+- **FR-047**: System skal gemme tidspunkt for alle bekræftelser
+- **FR-048**: Udlån kan ikke gennemføres før alle bekræftelser er givet
+
+**Rationale:** Dokumenterer at foreningen har opfyldt sin undervisningspligt og låntager har bekræftet kompetence. Fraskriver foreningen ansvar ved personskader eller skader på udstyr forårsaget af forkert brug.
+
+**Relaterede user stories:** US-013
+**Relaterede entiteter:** [Udlån](DATAMODEL.md#udlån)
+**Relaterede flows:** [Flow 2](FLOWS.md#flow-2-udlån-til-medlem), [Flow 3](FLOWS.md#flow-3-udlån-til-ikke-medlem-placering)
 
 ---
 

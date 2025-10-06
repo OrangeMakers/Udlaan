@@ -44,17 +44,23 @@ flowchart TD
     ValidateMember --> MemberValid{Gyldigt medlem?}
     MemberValid -->|Nej| MemberError[Vis fejl: Ugyldigt medlem]
     MemberValid -->|Ja| ShowMember[Vis medlemsinfo]
-    ShowMember --> Checklist[Vis udleveringstjekliste]
+    ShowMember --> GiveInstr[Ansvarlig giver instruktion i brug]
+    GiveInstr --> Checklist[Vis udleveringstjekliste]
     Checklist --> CheckItems[Ansvarlig gennemgår punkter]
     CheckItems --> AllDone{Alle punkter OK?}
     AllDone -->|Nej| CheckItems
-    AllDone -->|Ja| RegisterLoan[Registrer udlån]
+    AllDone -->|Ja| Confirm1[Låntager: Bekræft modtaget instruktion]
+    Confirm1 --> Confirm2[Låntager: Bekræft kompetence til brug]
+    Confirm2 --> Confirm3[Ansvarlig: Bekræft givet instruktion]
+    Confirm3 --> RegisterLoan[Registrer udlån med bekræftelser]
     RegisterLoan --> UpdateStatus[Opdater udstyr status til udlånt]
     UpdateStatus --> Confirm[Vis bekræftelse]
     Confirm --> End([Udlån gennemført])
 ```
 
-**Relaterede krav:** FR-011, FR-022, FR-023, FR-030, FR-033, US-006, US-009
+**Relaterede krav:** FR-011, FR-022, FR-023, FR-030, FR-033, FR-044, FR-045, FR-046, FR-047, FR-048, US-006, US-009, US-013
+
+**Ansvarsfraskrivelse:** Dette flow inkluderer juridisk vigtige bekræftelser der dokumenterer instruktion er givet og modtaget, hvilket fraskriver foreningen ansvar.
 
 ---
 
@@ -75,17 +81,23 @@ flowchart TD
     WaitConfirm --> Confirmed{Bekræftet?}
     Confirmed -->|Timeout| Cancelled[Annuller udlån]
     Confirmed -->|Ja| NotifyResponsible[Notificer ansvarlig]
-    NotifyResponsible --> Checklist[Vis udleveringstjekliste]
+    NotifyResponsible --> GiveInstr[Ansvarlig giver instruktion i brug]
+    GiveInstr --> Checklist[Vis udleveringstjekliste]
     Checklist --> CheckItems[Ansvarlig gennemgår punkter]
     CheckItems --> AllDone{Alle punkter OK?}
     AllDone -->|Nej| CheckItems
-    AllDone -->|Ja| RegisterLoan[Registrer udlån]
+    AllDone -->|Ja| Confirm1[Låntager: Bekræft modtaget instruktion]
+    Confirm1 --> Confirm2[Låntager: Bekræft kompetence til brug]
+    Confirm2 --> Confirm3[Ansvarlig: Bekræft givet instruktion]
+    Confirm3 --> RegisterLoan[Registrer udlån med bekræftelser]
     RegisterLoan --> UpdateStatus[Opdater udstyr status til udlånt]
     UpdateStatus --> Confirm[Vis bekræftelse]
     Confirm --> End([Udlån gennemført])
 ```
 
-**Relaterede krav:** FR-011, FR-024, FR-025, FR-026, FR-027, FR-028, FR-030, FR-033, US-007, US-008, US-009
+**Relaterede krav:** FR-011, FR-024, FR-025, FR-026, FR-027, FR-028, FR-030, FR-033, FR-044, FR-045, FR-046, FR-047, FR-048, US-007, US-008, US-009, US-013
+
+**Ansvarsfraskrivelse:** Dette flow inkluderer juridisk vigtige bekræftelser der dokumenterer instruktion er givet og modtaget, hvilket fraskriver foreningen ansvar.
 
 ---
 

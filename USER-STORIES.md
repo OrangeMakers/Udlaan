@@ -202,12 +202,35 @@ Detaljerede user stories for alle funktioner i systemet.
 
 ---
 
+### US-013: Ansvarsfraskrivelse gennem instruktionsbekræftelse
+- **Som** forening (Orangemakers)
+- **Vil jeg** dokumentere at instruktion er givet og modtaget
+- **Så** vi fraskriver ansvar ved skader forårsaget af forkert brug af udstyret
+
+**Acceptkriterier:**
+- Låntager skal eksplicit bekræfte at have modtaget instruktion
+- Låntager skal bekræfte at have kompetence til at bruge udstyret
+- Ansvarlig skal bekræfte at have givet fyldestgørende instruktion
+- Alle bekræftelser skal timestampes
+- Udlån kan ikke gennemføres før alle bekræftelser er givet
+- System skal gemme bekræftelser som dokumentation
+
+**Juridisk rationale:**
+- Dokumenterer foreningens opfyldelse af undervisningspligt
+- Dokumenterer låntagers accept af ansvar
+- Fraskriver foreningen ansvar ved personskade eller materielskade
+
+**Relaterede krav:** FR-044, FR-045, FR-046, FR-047, FR-048
+**Relaterede flows:** [Flow 2: Udlån til Medlem](FLOWS.md#flow-2-udlån-til-medlem), [Flow 3: Udlån til Ikke-medlem](FLOWS.md#flow-3-udlån-til-ikke-medlem-placering)
+
+---
+
 ## User Story Mapping
 
 ### Core Journey: Udlån og Returnering
 ```
 Login (US-005)
-  → Udlån (US-004, US-006/US-007/US-008, US-009)
+  → Udlån (US-004, US-006/US-007/US-008, US-009, US-013)
   → Returnering (US-010, US-011)
   → Privacy (US-002)
 ```
@@ -216,6 +239,15 @@ Login (US-005)
 ```
 Opret udstyr
   → Definer tjeklister (US-012)
+```
+
+### Legal Protection Journey
+```
+Instruktion gives (Ansvarlig)
+  → Bekræftelse modtaget (Låntager)
+  → Bekræftelse kompetence (Låntager)
+  → Bekræftelse givet instruktion (Ansvarlig)
+  → Dokumentation gemmes (US-013)
 ```
 
 ---
