@@ -122,19 +122,23 @@ Detaljerede user stories for alle funktioner i systemet.
 
 ---
 
-### US-008: Email/SMS bekræftelse til låntager
+### US-008: Email/SMS oprettelseslink til låntager
 - **Som** låntager (ikke-medlem)
-- **Vil jeg** modtage et link på email eller SMS
-- **Så** jeg kan bekræfte mine oplysninger før udlånet godkendes
+- **Vil jeg** modtage et oprettelseslink på email eller SMS
+- **Så** jeg selv kan udfylde mine oplysninger som derefter godkendes af ansvarlig
 
 **Acceptkriterier:**
-- System skal sende valideringslink til email eller SMS
-- Låntager skal kunne åbne link og bekræfte/udfylde data
-- Ansvarlig skal kunne se når låntager har bekræftet
-- Udlån kan først gennemføres når låntager har bekræftet
+- Ansvarlig skal kun indtaste låntagers telefon eller email
+- System skal sende oprettelseslink til email eller SMS
+- Låntager skal kunne åbne link og udfylde alle nødvendige oplysninger selv
+- System skal validere adresse automatisk mens låntager udfylder
+- Låntagers udfyldte oplysninger skal vises på ansvarlig's skærm
+- Ansvarlig skal kunne gennemse og godkende oplysningerne
+- Ansvarlig skal kunne afvise og bede om korrektioner
+- Udlån kan først gennemføres når ansvarlig har godkendt oplysningerne
 
-**Relaterede krav:** FR-026, FR-027, FR-028, FR-029
-**Relaterede flows:** [Flow 3: Udlån til Ikke-medlem](FLOWS.md#flow-3-udlån-til-ikke-medlem-placering), [Flow 6: Låntagers Bekræftelse](FLOWS.md#flow-6-låntagers-bekræftelse-emailsms-link)
+**Relaterede krav:** FR-026, FR-027, FR-028, FR-029, FR-030, FR-031, FR-055, FR-056
+**Relaterede flows:** [Flow 3: Udlån til Ikke-medlem](FLOWS.md#flow-3-udlån-til-ikke-medlem-placering), [Flow 6: Låntagers Udfyldelse](FLOWS.md#flow-6-låntagers-udfyldelse-emailsms-link)
 
 ---
 

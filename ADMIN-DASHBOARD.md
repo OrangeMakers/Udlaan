@@ -41,13 +41,15 @@ Admin dashboard giver administratorer et centralt overblik over udlånssystemet 
 **Funktioner:**
 - **Liste over alt udstyr** med søgning og filtrering
   - Filtre: Status (ledig, udlånt, beskadiget), Type, Placering
-  - Søgning: Navn, ID
+  - Søgning: Navn, ID, RFID tag
 - **Opret nyt udstyr**
   - Felter: Navn, Type, Beskrivelse, Placering, Generel note
+  - RFID tag (scanner eller indtast manuelt)
   - Standard låneperiode (dage)
   - Maksimal låneperiode (dage)
   - Tilknyt udleveringstjekliste
   - Tilknyt returneringstjekliste
+  - **Print RFID klistermærke** (fremtidig funktion)
 - **Rediger eksisterende udstyr**
   - Alle felter kan redigeres
   - Historik over ændringer

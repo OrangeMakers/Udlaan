@@ -40,7 +40,7 @@ flowchart TD
     ValidateMember --> MemberValid{Gyldigt medlem?}
     MemberValid -->|Nej| MemberError[Vis fejl: Ugyldigt medlem]
     MemberValid -->|Ja| ShowMember[Vis medlemsinfo]
-    ShowMember --> ScanEquip[Scanner/søg udstyr]
+    ShowMember --> ScanEquip[Scanner RFID tag på udstyr]
     ScanEquip --> CheckStatus{Status?}
     CheckStatus -->|Ledig| ShowEquip[Vis udstyr]
     CheckStatus -->|Udlånt| ShowLoanInfo[Vis: Udlånt til X, forventet retur Y]
@@ -68,12 +68,12 @@ flowchart TD
     Confirm3 --> RegisterLoan[Registrer udlån med bekræftelser]
     RegisterLoan --> UpdateStatus[Opdater udstyr status til udlånt]
     UpdateStatus --> MoreItems{Låne flere ting?}
-    MoreItems -->|Ja| ScanEquip
+    MoreItems -->|Ja| ScanEquip[Scanner RFID tag på næste udstyr]
     MoreItems -->|Nej| Confirm[Vis bekræftelse]
     Confirm --> End([Udlån gennemført])
 ```
 
-**Relaterede krav:** FR-011, FR-022, FR-023, FR-032, FR-035, FR-044, FR-045, FR-046, FR-047, FR-048, FR-052, FR-053, US-006, US-009, US-013
+**Relaterede krav:** FR-010, FR-011, FR-022, FR-023, FR-032, FR-035, FR-044, FR-045, FR-046, FR-047, FR-048, FR-052, FR-053, FR-054, US-006, US-009, US-013
 
 **Ansvarsfraskrivelse:** Dette flow inkluderer juridisk vigtige bekræftelser der dokumenterer instruktion er givet og modtaget, hvilket fraskriver foreningen ansvar.
 
@@ -83,17 +83,25 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Start([Ansvarlig vælger Udlån]) --> EnterInfo[Ansvarlig indtaster låntager info]
-    EnterInfo --> ValidateAddress[Valider adresse via sygesikring]
+    Start([Ansvarlig vælger Udlån]) --> AskContact[Spørg låntager om telefon eller email]
+    AskContact --> EnterContact[Indtast telefon/email]
+    EnterContact --> CheckKnown{Kendt i systemet?}
+    CheckKnown -->|Ja| SendNewLink[Send nyt oprettelseslink]
+    CheckKnown -->|Nej| SendLink[Send oprettelseslink email/SMS]
+    SendNewLink --> WaitInfo[Afventer låntager udfylder]
+    SendLink --> WaitInfo
+    WaitInfo --> BorrowerFills([Låntager: Udfylder info via link])
+    BorrowerFills --> ValidateAddress[System: Valider adresse via sygesikring]
     ValidateAddress --> AddressValid{Adresse gyldig?}
-    AddressValid -->|Nej| AddressError[Vis fejl: Ugyldig adresse]
-    AddressValid -->|Ja| SendLink[Send valideringslink email/SMS]
-    SendLink --> WaitConfirm[Afventer låntagers bekræftelse]
-    WaitConfirm --> Confirmed{Bekræftet?}
-    Confirmed -->|Timeout| Cancelled[Annuller udlån]
-    Confirmed -->|Ja| NotifyResponsible[Notificer ansvarlig]
-    NotifyResponsible --> ShowBorrower[Vis låntager info]
-    ShowBorrower --> ScanEquip[Scanner/søg udstyr]
+    AddressValid -->|Nej| ShowError[Vis fejl til låntager]
+    AddressValid -->|Ja| BorrowerSubmit[Låntager: Indsend oplysninger]
+    BorrowerSubmit --> NotifyScreen[Vis på skærm til ansvarlig]
+    NotifyScreen --> ReviewInfo[Ansvarlig: Gennemse oplysninger]
+    ReviewInfo --> ApproveInfo{Godkend info?}
+    ApproveInfo -->|Nej| RejectInfo[Afvis - bed om korrektioner]
+    RejectInfo --> WaitInfo
+    ApproveInfo -->|Ja| ShowBorrower[Vis godkendte låntager info]
+    ShowBorrower --> ScanEquip[Scanner RFID tag på udstyr]
     ScanEquip --> CheckStatus{Status?}
     CheckStatus -->|Ledig| ShowEquip[Vis udstyr]
     CheckStatus -->|Udlånt| ShowLoanInfo[Vis: Udlånt til X, forventet retur Y]
@@ -121,14 +129,16 @@ flowchart TD
     Confirm3 --> RegisterLoan[Registrer udlån med bekræftelser]
     RegisterLoan --> UpdateStatus[Opdater udstyr status til udlånt]
     UpdateStatus --> MoreItems{Låne flere ting?}
-    MoreItems -->|Ja| ScanEquip
+    MoreItems -->|Ja| ScanEquip[Scanner RFID tag på næste udstyr]
     MoreItems -->|Nej| Confirm[Vis bekræftelse]
     Confirm --> End([Udlån gennemført])
 ```
 
-**Relaterede krav:** FR-011, FR-026, FR-027, FR-028, FR-029, FR-030, FR-032, FR-035, FR-044, FR-045, FR-046, FR-047, FR-048, FR-052, FR-053, US-007, US-008, US-009, US-013
+**Relaterede krav:** FR-010, FR-011, FR-026, FR-027, FR-028, FR-029, FR-030, FR-031, FR-032, FR-035, FR-044, FR-045, FR-046, FR-047, FR-048, FR-052, FR-053, FR-054, FR-055, FR-056, US-007, US-008, US-009, US-013
 
 **Ansvarsfraskrivelse:** Dette flow inkluderer juridisk vigtige bekræftelser der dokumenterer instruktion er givet og modtaget, hvilket fraskriver foreningen ansvar.
+
+**Låntager workflow:** Låntager modtager link, udfylder selv alle oplysninger inkl. adresse. System validerer adresse automatisk. Ansvarlig gennemser og godkender oplysninger på skærm før udlån gennemføres.
 
 ---
 
@@ -136,7 +146,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    Start([Ansvarlig vælger Returnering]) --> ScanEquip[Scanner/søg udstyr]
+    Start([Ansvarlig vælger Returnering]) --> ScanEquip[Scanner RFID tag på udstyr]
     ScanEquip --> FindLoan[Find aktivt udlån]
     FindLoan --> LoanFound{Udlån fundet?}
     LoanFound -->|Nej| Error[Vis fejl: Ikke udlånt]
@@ -163,7 +173,7 @@ flowchart TD
     ShowConfirm --> End([Returnering gennemført])
 ```
 
-**Relaterede krav:** FR-012, FR-013, FR-017, FR-020, FR-031, FR-034, FR-037, FR-038, US-010, US-011
+**Relaterede krav:** FR-010, FR-012, FR-013, FR-017, FR-020, FR-033, FR-036, FR-039, FR-040, FR-050, FR-054, US-010, US-011
 
 **Privacy Note:** Ved returnering sættes planlagt sletningsdato til 3 måneder frem. Persondata bevares midlertidigt for håndtering af tvister. Automatisk job sletter persondata når sletningsdato nås (FR-017, FR-020, FR-021)
 
@@ -192,25 +202,28 @@ flowchart TD
 
 ---
 
-## Flow 6: Låntagers Bekræftelse (Email/SMS Link)
+## Flow 6: Låntagers Udfyldelse (Email/SMS Link)
 
 ```mermaid
 flowchart TD
-    Start([Låntager modtager link]) --> OpenLink[Åbner link på enhed]
+    Start([Låntager modtager oprettelseslink]) --> OpenLink[Åbner link på enhed]
     OpenLink --> ValidToken{Token gyldigt?}
     ValidToken -->|Nej| Expired[Vis: Link udløbet]
-    ValidToken -->|Ja| ShowInfo[Vis indsamlede oplysninger]
-    ShowInfo --> Review[Gennemgå oplysninger]
-    Review --> Correct{Korrekt?}
-    Correct -->|Nej| Edit[Redigér oplysninger]
-    Edit --> Review
-    Correct -->|Ja| ShowTerms[Vis lånevilkår]
-    ShowTerms --> Accept{Acceptér?}
-    Accept -->|Nej| Decline[Afvis udlån]
-    Accept -->|Ja| Confirm[Bekræft oplysninger]
-    Confirm --> UpdateSystem[System opdaterer status]
-    UpdateSystem --> Notify[Notificér ansvarlig]
-    Notify --> End([Bekræftelse gennemført])
+    ValidToken -->|Ja| ShowForm[Vis formular]
+    ShowForm --> FillInfo[Udfyld: Navn, adresse, kontaktinfo]
+    FillInfo --> ValidateAddr[System validerer adresse]
+    ValidateAddr --> AddrValid{Adresse gyldig?}
+    AddrValid -->|Nej| ShowAddrError[Vis fejl: Ugyldig adresse]
+    ShowAddrError --> FillInfo
+    AddrValid -->|Ja| ShowTerms[Vis lånevilkår]
+    ShowTerms --> ReviewAll[Gennemgå alt]
+    ReviewAll --> Correct{Alt korrekt?}
+    Correct -->|Nej| FillInfo
+    Correct -->|Ja| AcceptTerms[Acceptér vilkår]
+    AcceptTerms --> Submit[Indsend oplysninger]
+    Submit --> NotifyScreen[Vis på ansvarlig's skærm]
+    NotifyScreen --> WaitApproval[Afventer ansvarlig's godkendelse]
+    WaitApproval --> End([Info klar til gennemsyn])
 ```
 
 **Relaterede krav:** FR-028, FR-029, US-008

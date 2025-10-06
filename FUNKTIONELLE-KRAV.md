@@ -32,6 +32,7 @@ Tekniske krav og specifikationer for systemet.
 - **FR-049**: System skal kunne vise generel note på udstyr (fx "Maskinen rasler" eller "Kan lugte ved hård brug")
 - **FR-052**: Hvert udstyr skal have en standard låneperiode (forslag) og en maksimal låneperiode
 - **FR-053**: System skal foreslå standard låneperiode ved udlån, men tillade op til maksimal periode
+- **FR-054**: Hvert udstyr skal have et unikt RFID klistermærke der kan scannes til hurtig identifikation
 
 **Relaterede entiteter:** [Udstyr](DATAMODEL.md#udstyr)
 **Relaterede flows:** [Flow 2](FLOWS.md#flow-2-udlån-til-medlem), [Flow 3](FLOWS.md#flow-3-udlån-til-ikke-medlem-placering)
@@ -83,10 +84,12 @@ Tekniske krav og specifikationer for systemet.
 ### Validering og Kommunikation
 - **FR-026**: System skal kunne validere adresse/postnummer for ikke-medlemmer
 - **FR-027**: System skal kunne integrere med sygesikringsregister eller lignende validering
-- **FR-028**: System skal kunne sende valideringslink via email
-- **FR-029**: System skal kunne sende valideringslink via SMS
-- **FR-030**: Låntager skal kunne bekræfte oplysninger via link før udlån godkendes
-- **FR-031**: Ansvarlig skal kunne se bekræftelsesstatus
+- **FR-028**: System skal kunne sende oprettelseslink via email
+- **FR-029**: System skal kunne sende oprettelseslink via SMS
+- **FR-030**: Låntager skal kunne udfylde egne oplysninger via link
+- **FR-031**: System skal vise låntagers udfyldte oplysninger på ansvarlig's skærm
+- **FR-055**: Ansvarlig skal kunne gennemse og godkende låntagers oplysninger før udlån
+- **FR-056**: Ansvarlig skal kunne afvise oplysninger og bede låntager om korrektioner
 
 **Relaterede user stories:** US-007, US-008
 **Relaterede entiteter:** [ValideringsLink](DATAMODEL.md#valideringslink)
@@ -162,17 +165,17 @@ Tekniske krav og specifikationer for systemet.
 | Kategori | Antal Krav | Prioritet | Status |
 |----------|-----------|-----------|--------|
 | Identitet og Autentificering | 5 | Must Have | Draft |
-| Udstyrshåndtering | 8 | Must Have | Draft |
+| Udstyrshåndtering | 9 | Must Have | Draft |
 | Udlån og Returnering | 5 | Must Have | Draft |
 | Privacy og Datasletning | 6 | Must Have | Draft |
 | RFID og Hardware | 4 | Must Have | Draft |
-| Validering og Kommunikation | 6 | Should Have | Draft |
+| Validering og Kommunikation | 8 | Should Have | Draft |
 | Tjeklister | 7 | Must Have | Draft |
 | Skadehåndtering | 5 | Should Have | Draft |
 | Ansvarsfraskrivelse og Instruktion | 5 | Must Have | Draft |
 | Ikke-funktionelle | 5 | Must Have | Draft |
 
-**Total**: 53 krav (48 funktionelle, 5 ikke-funktionelle)
+**Total**: 56 krav (51 funktionelle, 5 ikke-funktionelle)
 
 ---
 

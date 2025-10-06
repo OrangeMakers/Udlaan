@@ -162,6 +162,7 @@ Hver udstyrstype skal kunne identificeres og trackes individuelt.
 ### Must Have (MVP)
 - RFID login for ansvarlige
 - RFID validering for medlemmer
+- RFID tagging af udstyr (klistermærker)
 - Registrering af udstyr
 - Basis udleveringstjekliste
 - Basis returneringstjekliste
@@ -199,8 +200,9 @@ Hver udstyrstype skal kunne identificeres og trackes individuelt.
 
 ### Hardware
 - RFID læsere til terminal
+- RFID klistermærker til udstyr
 - Terminal (desktop/tablet)
-- Printer til labels (QR-koder for udstyr)
+- Printer til RFID labels (fremtidig - til udskrivning af klistermærker)
 
 ### Integration
 - Sygesikringsregister eller lignende validering

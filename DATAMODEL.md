@@ -47,6 +47,7 @@ Fysiske genstande der kan udlånes.
 **Felter:**
 ```
 ID: UUID (primary key)
+RFID_tag: String (unique, RFID klistermærke til scanning)
 Navn: String
 Type: Enum (skruemaskine, rundsav, værktøj, diverse)
 Beskrivelse: Text
@@ -262,22 +263,26 @@ Reparations_noter: Text (NULL hvis ingen)
 
 ### ValideringsLink
 
-Links sendt til ikke-medlemmer for at bekræfte deres data.
+Oprettelseslinks sendt til ikke-medlemmer så de selv kan udfylde deres oplysninger.
 
 **Felter:**
 ```
 ID: UUID (primary key)
 Token: String (unique, random generated)
-Laantager_email_telefon: String
+Laantager_email_telefon: String (kontaktinfo link sendes til)
 Oprettet_dato: DateTime
 Udloeber_dato: DateTime (fx 24 timer fra oprettelse)
-Brugt: Boolean
-Brugt_dato: DateTime (NULL hvis ikke brugt)
+Status: Enum (afventer, udfyldt, godkendt, afvist)
+Udfyldt_dato: DateTime (NULL hvis ikke udfyldt)
+Godkendt_dato: DateTime (NULL hvis ikke godkendt)
+Godkendt_af: UUID (foreign key → Ansvarlig, NULL hvis ikke godkendt)
 Udlaan_id: UUID (foreign key → Udlån, foreløbigt udlån)
 ```
 
-**Relaterede krav:** FR-026, FR-027, FR-028, FR-029
-**Bruges i flows:** [Flow 3](FLOWS.md#flow-3-udlån-til-ikke-medlem-placering), [Flow 6](FLOWS.md#flow-6-låntagers-bekræftelse-emailsms-link)
+**Note:** Når låntager har udfyldt via link sættes status til "udfyldt". Ansvarlig gennemser på skærm og sætter status til "godkendt" eller "afvist".
+
+**Relaterede krav:** FR-026, FR-027, FR-028, FR-029, FR-030, FR-031, FR-055, FR-056
+**Bruges i flows:** [Flow 3](FLOWS.md#flow-3-udlån-til-ikke-medlem-placering), [Flow 6](FLOWS.md#flow-6-låntagers-udfyldelse-emailsms-link)
 **Relaterede user stories:** US-008
 
 ---
@@ -356,6 +361,7 @@ For optimal performance:
 
 ```sql
 -- Udstyr
+CREATE UNIQUE INDEX idx_udstyr_rfid ON Udstyr(RFID_tag);
 CREATE INDEX idx_udstyr_status ON Udstyr(Status);
 CREATE INDEX idx_udstyr_type ON Udstyr(Type);
 
